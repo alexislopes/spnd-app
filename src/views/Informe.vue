@@ -1,9 +1,25 @@
 <template>
   <div class="fragment">
-    <div>
-      <button @click="salvar" class="ui green button" id="salvar">
-        Salvar Informe
-      </button>
+    <div class="agreggate">
+      <div class="tile">
+        <h5>Casos Suspeitos</h5>
+        <p>{{ casosSuspeitos }}</p>
+      </div>
+
+      <div class="tile">
+        <h5>Casos Positivos</h5>
+        <p>{{ casosPositivos }}</p>
+      </div>
+
+      <div class="tile">
+        <h5>Positivos Hospital</h5>
+        <p>{{ positivosHospital }}</p>
+      </div>
+
+      <div class="tile">
+        <h5>Suspeitos Hospital</h5>
+        <p>{{ suspeitosHospital }}</p>
+      </div>
     </div>
 
     <div>
@@ -82,26 +98,8 @@
         <input type="number" v-model="informe.suspeito_privado_uti" />
       </div>
     </div>
-    <div class="agreggate">
-      <div class="tile">
-        <h5>Casos Suspeitos</h5>
-        <p>{{ casosSuspeitos }}</p>
-      </div>
-
-      <div class="tile">
-        <h5>Casos Positivos</h5>
-        <p>{{ casosPositivos }}</p>
-      </div>
-
-      <div class="tile">
-        <h5>Positivos Hospital</h5>
-        <p>{{ positivosHospital }}</p>
-      </div>
-
-      <div class="tile">
-        <h5>Suspeitos Hospital</h5>
-        <p>{{ suspeitosHospital }}</p>
-      </div>
+    <div>
+      <button @click="salvar" class="ui green button" id="salvar">Salvar Informe</button>
     </div>
   </div>
 </template>
@@ -131,8 +129,8 @@ export default {
         suspeito_publico_enfermaria: 0,
         suspeito_publico_uti: 0,
         suspeito_privado_enfermaria: 0,
-        suspeito_privado_uti: 0,
-      },
+        suspeito_privado_uti: 0
+      }
     };
   },
   computed: {
@@ -165,7 +163,7 @@ export default {
         Number(this.informe.obitos_positivos) +
         this.positivosHospital
       );
-    },
+    }
   },
   methods: {
     async salvar() {
@@ -189,15 +187,15 @@ export default {
 
       if (res.status === 201)
         document.querySelector("#salvar").classList.remove("loading");
-    },
-  },
+    }
+  }
 };
 </script>
 
 <style scoped>
 .fragment {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 200px;
 }
 
 .ui.input {
@@ -230,5 +228,25 @@ label {
 
 .agreggate {
   margin: 0 auto;
+}
+
+.fragment {
+  margin-right: 0;
+}
+
+/* 
+  ##Device = Most of the Smartphones Mobiles (Portrait)
+  ##Screen = B/w 320px to 479px
+*/
+
+@media (min-width: 320px) and (max-width: 480px) {
+  .fragment {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .fragment div {
+    margin: 20px;
+  }
 }
 </style>
