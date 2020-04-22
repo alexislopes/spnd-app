@@ -8,24 +8,32 @@ Vue.config.productionTip = false;
 
 Vue.filter("formatData", (timestamp) => {
   let months = [
-    "Jan",
-    "Fev",
-    "Mar",
-    "Abr",
-    "Mai",
-    "Jun",
-    "Jul",
-    "Ago",
-    "Set",
-    "Out",
-    "Nov",
-    "Dez",
+    "Janeiro",
+    "Fevereiro",
+    "Março",
+    "Abril",
+    "Maio",
+    "Junho",
+    "Julho",
+    "Agosto",
+    "Setembro",
+    "Outubro",
+    "Novembro",
+    "Dezembro",
   ];
-  let weekdays = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+  let weekdays = [
+    "Domingo",
+    "Segunda",
+    "Terça",
+    "Quarta",
+    "Quinta",
+    "Sexta",
+    "Sábado",
+  ];
   let data = new Date(timestamp);
-  return `${weekdays[data.getDay()]} ${data.getDate()} ${
-    months[data.getMonth()]
-  } ${data.getFullYear()}`;
+  return `${data.getDate()} ${months[data.getMonth()]} ${data.getFullYear()}, ${
+    weekdays[data.getDay()]
+  } `;
 });
 
 new Vue({
