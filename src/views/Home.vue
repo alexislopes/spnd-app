@@ -182,4 +182,20 @@ h1 {
   color: red;
   margin: -3px 0 0 3px;
 }
+
+/* 
+  ##Device = Most of the Smartphones Mobiles (Portrait)
+  ##Screen = B/w 320px to 479px
+*/
+
+@media (min-width: 320px) and (max-width: 480px) {
+  .dados-totais {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .card {
+    margin-top: 20px;
+  }
+}
 </style>
