@@ -9,12 +9,23 @@
           <div class="dados">
             <p class="dado">{{informe.casos_suspeitos}}</p>
             <p class="diferenca">
-              {{modulate(informe.casos_suspeitos - informes[1].casos_suspeitos)}}
+              {{modulate(diferencaSuspeitos)}}
               <i
-                v-if="isPositive(informe.casos_suspeitos - informes[1].casos_suspeitos)"
+                v-if="isPositive(diferencaSuspeitos)"
                 class="fas fa-sort-up"
               ></i>
+              <i v-else-if="isPositive(diferencaSuspeitos) === ''" class="far fa-window-minimize"></i>
+
               <i v-else class="fas fa-sort-down"></i>
+            </p>
+          </div>
+          <div class="porcentagens">
+            <p class="dado">{{populacao.toFixed(2)}}%</p>
+            <p class="exp">
+              <a
+                target="_blank"
+                href="https://cidades.ibge.gov.br/brasil/sp/sao-jose-dos-campos/panorama"
+              >da população estimada de São José dos Campos.</a>
             </p>
           </div>
         </div>
@@ -23,13 +34,19 @@
           <div class="dados">
             <p class="dado">{{informe.casos_positivos}}</p>
             <p class="diferenca">
-              {{modulate(informe.casos_positivos - informes[1].casos_positivos)}}
+              {{modulate(diferencaPositivos)}}
               <i
-                v-if="isPositive(informe.casos_positivos - informes[1].casos_positivos)"
+                v-if="isPositive(diferencaPositivos)"
                 class="fas fa-sort-up"
               ></i>
+              <i v-else-if="isPositive(diferencaPositivos) === ''" class="far fa-window-minimize"></i>
+
               <i v-else class="fas fa-sort-down"></i>
             </p>
+          </div>
+          <div class="porcentagens">
+            <p class="dado">{{perPositivos.toFixed(2)}}%</p>
+            <p class="exp">da quantidade de Suspeitos.</p>
           </div>
         </div>
         <div class="card">
@@ -37,13 +54,18 @@
           <div class="dados">
             <p class="dado">{{informe.obitos_positivos}}</p>
             <p class="diferenca">
-              {{modulate(informe.obitos_positivos - informes[1].obitos_positivos)}}
+              {{modulate(diferencaObitos)}}
               <i
-                v-if="isPositive(informe.obitos_positivos - informes[1].obitos_positivos)"
+                v-if="isPositive(diferencaObitos)"
                 class="fas fa-sort-up"
               ></i>
+              <i v-else-if="isPositive(diferencaObitos) === ''" class="far fa-window-minimize"></i>
               <i v-else class="fas fa-sort-down"></i>
             </p>
+          </div>
+          <div class="porcentagens">
+            <p class="dado">{{perObitos.toFixed(2)}}%</p>
+            <p class="exp">da quantidade de Positivos.</p>
           </div>
         </div>
         <div class="card">
@@ -51,13 +73,19 @@
           <div class="dados">
             <p class="dado">{{informe.casos_recuperados}}</p>
             <p class="diferenca">
-              {{modulate(informe.casos_recuperados - informes[1].casos_recuperados)}}
+              {{modulate(diferencaRecuperados)}}
               <i
-                v-if="isPositive(informe.casos_recuperados - informes[1].casos_recuperados)"
+                v-if="isPositive(diferencaRecuperados)"
                 class="fas fa-sort-up"
               ></i>
+              <i v-else-if="isPositive(diferencaRecuperados) === ''" class="far fa-window-minimize"></i>
+
               <i v-else class="fas fa-sort-down"></i>
             </p>
+          </div>
+          <div class="porcentagens">
+            <p class="dado">{{perRecuperados.toFixed(2)}}%</p>
+            <p class="exp">da quantidade de Positivos.</p>
           </div>
         </div>
       </div>
@@ -89,11 +117,12 @@ export default {
 
     this.informes = informes;
     this.informe = informes[0];
-    console.log(this.informes);
   },
   methods: {
     isPositive(n) {
-      return n > 0 ? true : false;
+      if (n > 0) return true;
+      else if (n === 0) return "";
+      else return false;
     },
     modulate(n) {
       return n < 0 ? n * -1 : n;
@@ -104,6 +133,39 @@ export default {
       const PERCENT = 100;
       return (
         (this.informe.casos_positivos * PERCENT) / this.informe.casos_suspeitos
+      );
+    },
+    diferencaRecuperados() {
+      return (
+        this.informe.casos_recuperados - this.informes[1].casos_recuperados
+      );
+    },
+    diferencaPositivos() {
+      return this.informe.casos_positivos - this.informes[1].casos_positivos;
+    },
+    diferencaSuspeitos() {
+      return this.informe.casos_suspeitos - this.informes[1].casos_suspeitos;
+    },
+    diferencaObitos() {
+      return this.informe.obitos_positivos - this.informes[1].obitos_positivos;
+    },
+    populacao() {
+      let POPULACAO_ESTIMADA = 721944;
+      return (this.informe.casos_suspeitos / POPULACAO_ESTIMADA) * 100;
+    },
+    perPositivos() {
+      return (
+        (this.informe.casos_positivos / this.informe.casos_suspeitos) * 100
+      );
+    },
+    perObitos() {
+      return (
+        (this.informe.obitos_positivos / this.informe.casos_positivos) * 100
+      );
+    },
+    perRecuperados() {
+      return (
+        (this.informe.casos_recuperados / this.informe.casos_positivos) * 100
       );
     }
   },
@@ -120,6 +182,7 @@ export default {
 }
 
 .home {
+  margin-top: 40px;
   display: grid;
   grid-template-columns: 1fr 5fr 1fr;
 }
@@ -181,6 +244,35 @@ h1 {
   position: absolute;
   color: red;
   margin: -3px 0 0 3px;
+}
+
+.far.fa-window-minimize {
+  position: absolute;
+  font-size: 8px;
+  font-weight: bold;
+  color: rgb(107, 107, 107);
+  margin-top: 1px;
+  margin-left: 4px;
+}
+
+.exp {
+  font-size: 16px;
+  margin-bottom: 20px;
+  margin: 0 !important;
+  width: 100%;
+  text-align: center !important;
+  padding: 10px;
+  color: rgb(150, 150, 150);
+}
+
+.exp a {
+  color: rgb(150, 150, 150);
+}
+
+.porcentagens > .dado {
+  text-align: center;
+  margin-bottom: 5px;
+  padding: 0;
 }
 
 /* 
