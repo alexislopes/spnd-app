@@ -20,7 +20,7 @@
               <i v-else class="fas fa-sort-down"></i>
             </p>
           </div>
-          <highcharts class="chart" :options="stockSuspeitos"></highcharts>
+          <highcharts v-if="suspeitos != null" class="chart" :options="suspeitos"></highcharts>
           <div class="porcentagens">
             <p class="dado">{{ populacao.toFixed(2) }}%</p>
             <p class="exp">
@@ -46,7 +46,7 @@
               <i v-else class="fas fa-sort-down"></i>
             </p>
           </div>
-          <highcharts class="chart" :options="stockPositivos"></highcharts>
+          <highcharts v-if="positivos != null" class="chart" :options="positivos"></highcharts>
 
           <div class="porcentagens">
             <p class="dado">{{ perPositivos.toFixed(2) }}%</p>
@@ -67,7 +67,7 @@
               <i v-else class="fas fa-sort-down"></i>
             </p>
           </div>
-          <highcharts class="chart" :options="stockObitos"></highcharts>
+          <highcharts v-if="obitos != null" class="chart" :options="obitos"></highcharts>
 
           <div class="porcentagens">
             <p class="dado">{{ perObitos.toFixed(2) }}%</p>
@@ -89,7 +89,7 @@
               <i v-else class="fas fa-sort-down"></i>
             </p>
           </div>
-          <highcharts class="chart" :options="stockRecuperados"></highcharts>
+          <highcharts v-if="recuperados != null" class="chart" :options="recuperados"></highcharts>
 
           <div class="porcentagens">
             <p class="dado">{{ perRecuperados.toFixed(2) }}%</p>
@@ -106,12 +106,17 @@
 // @ is an alias to /src
 import axios from "axios";
 import { Chart } from "highcharts-vue";
+import { config } from "../config/chartConfig";
 export default {
   name: "Home",
   data() {
     return {
       informes: [],
-      informe: null
+      informe: null,
+      suspeitos: null,
+      positivos: null,
+      obitos: null,
+      recuperados: null
     };
   },
   async created() {
@@ -124,6 +129,11 @@ export default {
 
     this.informes = informes;
     this.informe = [informes[0], informes[1]];
+
+    this.suspeitos = await config.suspeitos(this.informes);
+    this.positivos = await config.positivos(this.informes);
+    this.obitos = await config.obitos(this.informes);
+    this.recuperados = await config.recuperados(this.informes);
   },
   methods: {
     isPositive(n) {
@@ -169,6 +179,18 @@ export default {
     },
     sortedInformes() {
       return this.informes.sort((a, b) => (a.timestamp > b.timestamp ? 1 : -1));
+    },
+    async stockSuspeitos() {
+      return await config.suspeitos(this.informes);
+    },
+    async stockPositivos() {
+      return await config.positivos(this.informes);
+    },
+    async stockObitos() {
+      return await config.obitos(this.informes);
+    },
+    async stockRecuperados() {
+      return await config.recuperados(this.informes);
     }
   },
   computed: {
@@ -215,39 +237,6 @@ export default {
         (this.informe[0].casos_recuperados / this.informe[0].casos_positivos) *
         100
       );
-    },
-
-    stockSuspeitos() {
-      var stk = this.sortedInformes().map(informe => [
-        informe.timestamp,
-        informe.casos_suspeitos
-      ]);
-
-      return this.chartConfig(stk);
-    },
-    stockPositivos() {
-      var stk = this.sortedInformes().map(informe => [
-        informe.timestamp,
-        informe.casos_positivos
-      ]);
-
-      return this.chartConfig(stk);
-    },
-    stockObitos() {
-      var stk = this.sortedInformes().map(informe => [
-        informe.timestamp,
-        informe.obitos_positivos
-      ]);
-
-      return this.chartConfig(stk);
-    },
-    stockRecuperados() {
-      var stk = this.sortedInformes().map(informe => [
-        informe.timestamp,
-        informe.casos_recuperados
-      ]);
-
-      return this.chartConfig(stk);
     }
   },
   components: {
