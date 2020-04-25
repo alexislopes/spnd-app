@@ -1,15 +1,16 @@
 <template>
   <div class="home">
     <div></div>
-    <div class="dashboard">
-      <h1>{{informe.timestamp | formatData}}</h1>
+    <div v-if="informe != null" class="dashboard">
+      <h1 class="title">Informe Coronavirus São José dos Campos</h1>
+      <h1>{{ informe[0].timestamp | formatData }}</h1>
       <div class="dados-totais">
         <div class="card">
           <p class="card-title">Suspeitos</p>
           <div class="dados">
-            <p class="dado">{{informe.casos_suspeitos}}</p>
+            <p class="dado">{{ informe[0].casos_suspeitos }}</p>
             <p class="diferenca">
-              {{modulate(diferencaSuspeitos)}}
+              {{ modulate(diferencaSuspeitos) }}
               <i
                 v-if="isPositive(diferencaSuspeitos)"
                 class="fas fa-sort-up"
@@ -19,8 +20,9 @@
               <i v-else class="fas fa-sort-down"></i>
             </p>
           </div>
+          <highcharts class="chart" :options="stockSuspeitos"></highcharts>
           <div class="porcentagens">
-            <p class="dado">{{populacao.toFixed(2)}}%</p>
+            <p class="dado">{{ populacao.toFixed(2) }}%</p>
             <p class="exp">
               <a
                 target="_blank"
@@ -32,9 +34,9 @@
         <div class="card">
           <p class="card-title">Positivos</p>
           <div class="dados">
-            <p class="dado">{{informe.casos_positivos}}</p>
+            <p class="dado">{{ informe[0].casos_positivos }}</p>
             <p class="diferenca">
-              {{modulate(diferencaPositivos)}}
+              {{ modulate(diferencaPositivos) }}
               <i
                 v-if="isPositive(diferencaPositivos)"
                 class="fas fa-sort-up"
@@ -44,17 +46,19 @@
               <i v-else class="fas fa-sort-down"></i>
             </p>
           </div>
+          <highcharts class="chart" :options="stockPositivos"></highcharts>
+
           <div class="porcentagens">
-            <p class="dado">{{perPositivos.toFixed(2)}}%</p>
+            <p class="dado">{{ perPositivos.toFixed(2) }}%</p>
             <p class="exp">da quantidade de Suspeitos.</p>
           </div>
         </div>
         <div class="card">
           <p class="card-title">Óbitos</p>
           <div class="dados">
-            <p class="dado">{{informe.obitos_positivos}}</p>
+            <p class="dado">{{ informe[0].obitos_positivos }}</p>
             <p class="diferenca">
-              {{modulate(diferencaObitos)}}
+              {{ modulate(diferencaObitos) }}
               <i
                 v-if="isPositive(diferencaObitos)"
                 class="fas fa-sort-up"
@@ -63,17 +67,19 @@
               <i v-else class="fas fa-sort-down"></i>
             </p>
           </div>
+          <highcharts class="chart" :options="stockObitos"></highcharts>
+
           <div class="porcentagens">
-            <p class="dado">{{perObitos.toFixed(2)}}%</p>
+            <p class="dado">{{ perObitos.toFixed(2) }}%</p>
             <p class="exp">da quantidade de Positivos.</p>
           </div>
         </div>
         <div class="card">
           <p class="card-title">Recuperados</p>
           <div class="dados">
-            <p class="dado">{{informe.casos_recuperados}}</p>
+            <p class="dado">{{ informe[0].casos_recuperados }}</p>
             <p class="diferenca">
-              {{modulate(diferencaRecuperados)}}
+              {{ modulate(diferencaRecuperados) }}
               <i
                 v-if="isPositive(diferencaRecuperados)"
                 class="fas fa-sort-up"
@@ -83,8 +89,10 @@
               <i v-else class="fas fa-sort-down"></i>
             </p>
           </div>
+          <highcharts class="chart" :options="stockRecuperados"></highcharts>
+
           <div class="porcentagens">
-            <p class="dado">{{perRecuperados.toFixed(2)}}%</p>
+            <p class="dado">{{ perRecuperados.toFixed(2) }}%</p>
             <p class="exp">da quantidade de Positivos.</p>
           </div>
         </div>
@@ -97,26 +105,25 @@
 <script>
 // @ is an alias to /src
 import axios from "axios";
-
+import { Chart } from "highcharts-vue";
 export default {
   name: "Home",
   data() {
     return {
       informes: [],
-      informe: []
+      informe: null
     };
   },
   async created() {
     const response = await axios.get(
       "https://covid19-sjc-api.herokuapp.com/informe"
     );
-
     var informes = response.data.informes;
 
     informes = informes.sort((a, b) => (a > b ? 1 : -1));
 
     this.informes = informes;
-    this.informe = informes[0];
+    this.informe = [informes[0], informes[1]];
   },
   methods: {
     isPositive(n) {
@@ -126,6 +133,42 @@ export default {
     },
     modulate(n) {
       return n < 0 ? n * -1 : n;
+    },
+    chartConfig(data) {
+      return {
+        chart: {
+          type: "spline"
+        },
+        title: {
+          text: ""
+        },
+        yAxis: {
+          visible: false
+        },
+        xAxis: {
+          visible: false,
+          type: "datetime"
+        },
+        legend: {
+          enabled: false
+        },
+        credits: {
+          enabled: false
+        },
+        tooltip: {
+          xDateFormat: "%d/%m/%Y",
+          shared: true
+        },
+        series: [
+          {
+            name: "Casos",
+            data: data
+          }
+        ]
+      };
+    },
+    sortedInformes() {
+      return this.informes.sort((a, b) => (a.timestamp > b.timestamp ? 1 : -1));
     }
   },
   computed: {
@@ -137,39 +180,79 @@ export default {
     },
     diferencaRecuperados() {
       return (
-        this.informe.casos_recuperados - this.informes[1].casos_recuperados
+        this.informe[0].casos_recuperados - this.informe[1].casos_recuperados
       );
     },
     diferencaPositivos() {
-      return this.informe.casos_positivos - this.informes[1].casos_positivos;
+      return this.informe[0].casos_positivos - this.informe[1].casos_positivos;
     },
     diferencaSuspeitos() {
-      return this.informe.casos_suspeitos - this.informes[1].casos_suspeitos;
+      return this.informe[0].casos_suspeitos - this.informe[1].casos_suspeitos;
     },
     diferencaObitos() {
-      return this.informe.obitos_positivos - this.informes[1].obitos_positivos;
+      return (
+        this.informe[0].obitos_positivos - this.informe[1].obitos_positivos
+      );
     },
     populacao() {
       let POPULACAO_ESTIMADA = 721944;
-      return (this.informe.casos_suspeitos / POPULACAO_ESTIMADA) * 100;
+      return (this.informe[0].casos_suspeitos / POPULACAO_ESTIMADA) * 100;
     },
     perPositivos() {
       return (
-        (this.informe.casos_positivos / this.informe.casos_suspeitos) * 100
+        (this.informe[0].casos_positivos / this.informe[0].casos_suspeitos) *
+        100
       );
     },
     perObitos() {
       return (
-        (this.informe.obitos_positivos / this.informe.casos_positivos) * 100
+        (this.informe[0].obitos_positivos / this.informe[0].casos_positivos) *
+        100
       );
     },
     perRecuperados() {
       return (
-        (this.informe.casos_recuperados / this.informe.casos_positivos) * 100
+        (this.informe[0].casos_recuperados / this.informe[0].casos_positivos) *
+        100
       );
+    },
+
+    stockSuspeitos() {
+      var stk = this.sortedInformes().map(informe => [
+        informe.timestamp,
+        informe.casos_suspeitos
+      ]);
+
+      return this.chartConfig(stk);
+    },
+    stockPositivos() {
+      var stk = this.sortedInformes().map(informe => [
+        informe.timestamp,
+        informe.casos_positivos
+      ]);
+
+      return this.chartConfig(stk);
+    },
+    stockObitos() {
+      var stk = this.sortedInformes().map(informe => [
+        informe.timestamp,
+        informe.obitos_positivos
+      ]);
+
+      return this.chartConfig(stk);
+    },
+    stockRecuperados() {
+      var stk = this.sortedInformes().map(informe => [
+        informe.timestamp,
+        informe.casos_recuperados
+      ]);
+
+      return this.chartConfig(stk);
     }
   },
-  components: {}
+  components: {
+    highcharts: Chart
+  }
 };
 </script>
 
@@ -181,6 +264,16 @@ export default {
   margin: 20px 0;
 }
 
+.chart {
+  height: 100px;
+}
+
+.title {
+  font-size: 20px;
+  padding: 15px;
+  padding-left: 0;
+}
+
 .home {
   margin-top: 40px;
   display: grid;
@@ -188,13 +281,12 @@ export default {
 }
 
 h1 {
-  font-size: 18px;
+  font-size: 14px;
   text-align: start;
   color: rgb(136, 136, 136);
 }
 
 .card {
-  margin-top: 40px;
   box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
   border-radius: 5px;
 }
@@ -217,6 +309,7 @@ h1 {
 }
 
 .dados-totais {
+  margin-top: 10px;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
   grid-gap: 20px;

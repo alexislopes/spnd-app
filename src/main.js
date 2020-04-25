@@ -3,6 +3,7 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import "./registerServiceWorker";
+import HighchartsVue from "highcharts-vue";
 
 Vue.config.productionTip = false;
 
@@ -35,6 +36,8 @@ Vue.filter("formatData", (timestamp) => {
     weekdays[data.getDay()]
   } `;
 });
+
+Vue.use(HighchartsVue);
 
 new Vue({
   router,
