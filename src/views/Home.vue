@@ -97,6 +97,20 @@
           </div>
         </div>
       </div>
+      <div class="footer">
+        <p class="fonte">
+          Fonte:
+          <a
+            href="https://www.sjc.sp.gov.br/servicos/saude/coronavirus/informe-epidemiologico/"
+            target="_blank"
+          >Prefeitura de São José dos Campos</a>
+        </p>
+        <p class="credits">
+          Developed with
+          <i class="fas fa-heart"></i> by
+          <a href="https://linktr.ee/alexislopes" target="_blank">Alexis Lopes</a>
+        </p>
+      </div>
     </div>
     <div></div>
   </div>
@@ -264,15 +278,35 @@ export default {
 }
 
 .home {
-  margin-top: 40px;
   display: grid;
   grid-template-columns: 1fr 5fr 1fr;
+}
+
+.footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 10px;
 }
 
 h1 {
   font-size: 14px;
   text-align: start;
   color: rgb(136, 136, 136);
+}
+
+.fas.fa-heart:hover {
+  color: #ff0000;
+}
+
+a {
+  cursor: pointer;
+  color: #ccc;
+}
+
+.credits,
+.fonte {
+  color: #ccc;
 }
 
 .card {
@@ -370,6 +404,11 @@ h1 {
 
   .card {
     margin-top: 20px;
+  }
+
+  .footer {
+    flex-direction: column;
+    margin-bottom: 20px;
   }
 }
 </style>
