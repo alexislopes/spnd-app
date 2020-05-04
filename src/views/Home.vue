@@ -137,9 +137,8 @@ export default {
     const response = await axios.get(
       "https://covid19-sjc-api.herokuapp.com/informe"
     );
-    var informes = response.data.informes;
 
-    informes = informes.sort((a, b) => (a > b ? 1 : -1));
+    var informes = response.data.informes;
 
     this.informes = informes;
     this.informe = [informes[0], informes[1]];
