@@ -13,11 +13,11 @@
               {{ modulate(diferencaSuspeitos) }}
               <i
                 v-if="isPositive(diferencaSuspeitos)"
-                class="fas fa-sort-up"
+                class="fas fa-sort-up ruim"
               ></i>
               <i v-else-if="isPositive(diferencaSuspeitos) === ''" class="far fa-window-minimize"></i>
 
-              <i v-else class="fas fa-sort-down"></i>
+              <i v-else class="fas fa-sort-down bom"></i>
             </p>
           </div>
           <highcharts v-if="suspeitos != null" class="chart" :options="suspeitos"></highcharts>
@@ -39,11 +39,11 @@
               {{ modulate(diferencaPositivos) }}
               <i
                 v-if="isPositive(diferencaPositivos)"
-                class="fas fa-sort-up"
+                class="fas fa-sort-up ruim"
               ></i>
               <i v-else-if="isPositive(diferencaPositivos) === ''" class="far fa-window-minimize"></i>
 
-              <i v-else class="fas fa-sort-down"></i>
+              <i v-else class="fas fa-sort-down bom"></i>
             </p>
           </div>
           <highcharts v-if="positivos != null" class="chart" :options="positivos"></highcharts>
@@ -61,10 +61,10 @@
               {{ modulate(diferencaObitos) }}
               <i
                 v-if="isPositive(diferencaObitos)"
-                class="fas fa-sort-up"
+                class="fas fa-sort-up ruim"
               ></i>
               <i v-else-if="isPositive(diferencaObitos) === ''" class="far fa-window-minimize"></i>
-              <i v-else class="fas fa-sort-down"></i>
+              <i v-else class="fas fa-sort-down bom"></i>
             </p>
           </div>
           <highcharts v-if="obitos != null" class="chart" :options="obitos"></highcharts>
@@ -355,10 +355,18 @@ a {
   color: green;
 }
 
+.fas.fa-sort-up.ruim {
+  color: red;
+}
+
 .fas.fa-sort-down {
   position: absolute;
   color: red;
   margin: -3px 0 0 3px;
+}
+
+.fas.fa-sort-down.bom {
+  color: green;
 }
 
 .far.fa-window-minimize {

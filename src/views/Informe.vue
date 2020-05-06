@@ -161,7 +161,8 @@ export default {
       return (
         Number(this.informe.positivo_casa) +
         Number(this.informe.obitos_positivos) +
-        this.positivosHospital
+        this.positivosHospital +
+        Number(this.informe.casos_recuperados)
       );
     }
   },
