@@ -30,6 +30,27 @@
               >da população estimada de São José dos Campos.</a>
             </p>
           </div>
+          <div class="meta">
+            <p class="exp start">Hospitais Públicos</p>
+            <div class="row">
+              <p>ENFERMARIA</p>
+              <p>{{informe[0].suspeito_publico_enfermaria}}</p>
+            </div>
+            <div class="row">
+              <p>UTI</p>
+              <p>{{informe[0].suspeito_publico_uti}}</p>
+            </div>
+
+            <p class="exp start">Hospitais Privados</p>
+            <div class="row">
+              <p>ENFERMARIA</p>
+              <p>{{informe[0].suspeito_privado_enfermaria}}</p>
+            </div>
+            <div class="row">
+              <p>UTI</p>
+              <p>{{informe[0].suspeito_privado_uti}}</p>
+            </div>
+          </div>
         </div>
         <div class="card">
           <p class="card-title">Positivos</p>
@@ -52,6 +73,36 @@
             <p class="dado">{{ perPositivos.toFixed(2) }}%</p>
             <p class="exp">da quantidade de Suspeitos.</p>
           </div>
+
+          <!-- <div>
+            <p
+              class="dado meta"
+            >{{informe[0].casos_positivos - informe[0].casos_recuperados - informe[0].obitos_positivos}}</p>
+
+            <p class="exp meta">Em Recuperação</p>
+          </div>-->
+
+          <div class="meta">
+            <p class="exp start">Hospitais Públicos</p>
+            <div class="row">
+              <p>ENFERMARIA</p>
+              <p>{{informe[0].positivo_publico_enfermaria}}</p>
+            </div>
+            <div class="row">
+              <p>UTI</p>
+              <p>{{informe[0].positivo_publico_uti}}</p>
+            </div>
+
+            <p class="exp start">Hospitais Privados</p>
+            <div class="row">
+              <p>ENFERMARIA</p>
+              <p>{{informe[0].positivo_privado_enfermaria}}</p>
+            </div>
+            <div class="row">
+              <p>UTI</p>
+              <p>{{informe[0].positivo_privado_uti}}</p>
+            </div>
+          </div>
         </div>
         <div class="card">
           <p class="card-title">Óbitos</p>
@@ -72,6 +123,16 @@
           <div class="porcentagens">
             <p class="dado">{{ perObitos.toFixed(2) }}%</p>
             <p class="exp">da quantidade de Positivos.</p>
+          </div>
+          <div class="meta">
+            <div class="row">
+              <p>SUSPEITOS</p>
+              <p>{{informes[0].obitos_suspeitos}}</p>
+            </div>
+            <div class="row">
+              <p>DESCARTADOS</p>
+              <p>{{informes[0].obitos_descartados}}</p>
+            </div>
           </div>
         </div>
         <div class="card">
@@ -147,6 +208,8 @@ export default {
     this.positivos = await config.positivos(this.informes);
     this.obitos = await config.obitos(this.informes);
     this.recuperados = await config.recuperados(this.informes);
+
+    console.log(informes);
   },
   methods: {
     isPositive(n) {
@@ -259,6 +322,20 @@ export default {
 </script>
 
 <style scoped>
+.row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.exp.start {
+  text-align: start !important;
+}
+
+.row p {
+  margin: 5px 10px !important;
+}
+
 .totais,
 .obitos {
   display: grid;
@@ -390,6 +467,19 @@ a {
 
 .exp a {
   color: rgb(150, 150, 150);
+}
+
+.exp.meta {
+  font-size: 18px;
+  color: rgb(107, 107, 107);
+  margin-top: 0;
+}
+
+.dado.meta {
+  text-align: center;
+  margin: 0;
+  margin-top: 20px;
+  padding: 0;
 }
 
 .porcentagens > .dado {
