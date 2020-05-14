@@ -74,6 +74,10 @@
             <p class="exp">da quantidade de Suspeitos.</p>
           </div>
 
+          <div class="porcentagens">
+            <p class="dado real">{{ informe[0].casos_positivos - informe[0].casos_recuperados }}</p>
+            <p class="exp">Casos Reais</p>
+          </div>
           <!-- <div>
             <p
               class="dado meta"
@@ -402,6 +406,10 @@ a {
   margin-right: 0;
 }
 
+.dado.real {
+  margin-left: 0px;
+  margin-right: 0px;
+}
 .card-title {
   padding-top: 1px;
   color: #b9b9b9;
