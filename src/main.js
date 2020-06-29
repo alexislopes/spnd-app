@@ -7,34 +7,36 @@ import HighchartsVue from "highcharts-vue";
 
 Vue.config.productionTip = false;
 
+Vue.filter("numeroPreco", (valor) => {
+  valor = Number(valor);
+  if (!isNaN(valor)) {
+    return valor.toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    });
+  } else {
+    return "";
+  }
+});
+
 Vue.filter("formatData", (timestamp) => {
   let months = [
-    "Janeiro",
-    "Fevereiro",
-    "Março",
-    "Abril",
-    "Maio",
-    "Junho",
-    "Julho",
-    "Agosto",
-    "Setembro",
-    "Outubro",
-    "Novembro",
-    "Dezembro",
+    "Jan",
+    "Fev",
+    "Mar",
+    "Abr",
+    "Mai",
+    "Jun",
+    "Jul",
+    "Ago",
+    "Set",
+    "Out",
+    "Nov",
+    "Dez",
   ];
-  let weekdays = [
-    "Domingo",
-    "Segunda",
-    "Terça",
-    "Quarta",
-    "Quinta",
-    "Sexta",
-    "Sábado",
-  ];
+
   let data = new Date(timestamp);
-  return `${data.getDate()} ${months[data.getMonth()]} ${data.getFullYear()}, ${
-    weekdays[data.getDay()]
-  } `;
+  return `${data.getDate()} ${months[data.getMonth()]} ${data.getFullYear()} `;
 });
 
 Vue.use(HighchartsVue);
